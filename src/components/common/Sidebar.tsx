@@ -4,13 +4,14 @@ import { useMutation, useQuery } from 'react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import boardApi from 'src/api/board.api'
-import { useBoardStore } from 'src/zustand/board'
 import { useUserStore } from 'src/zustand/user'
 import assets from 'src/assets'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
 import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd'
 import { Board } from 'src/types/board'
+import { useBoardStore } from 'src/zustand/board'
+import FavoriteList from './FavoriteList'
 
 const SIDE_BAR_WIDTH = 250
 const Sidebar = () => {
@@ -25,7 +26,7 @@ const Sidebar = () => {
     queryKey: 'getBoards',
     queryFn: () => boardApi.getAll(),
     onSuccess: (res) => {
-      setBoards(res.data)
+      setBoards([...res.data])
     },
     onError: (error: any) => {
       toast.dismiss()
@@ -36,9 +37,9 @@ const Sidebar = () => {
   const addBoardMutation = useMutation({
     mutationFn: () => boardApi.create(),
     onSuccess: (res) => {
-      const newList = [...boards, res.data.board]
+      const newList = [...boards, res.data]
       setBoards(newList)
-      navigate(`/boards/${res.data.board._id}`)
+      navigate(`/boards/${res.data._id}`)
     },
     onError: (error: any) => {
       toast.dismiss()
@@ -121,7 +122,7 @@ const Sidebar = () => {
           </Box>
         </ListItem>
         <Box sx={{ paddingTop: '10px' }} />
-        {/* <FavouriteList /> */}
+        <FavoriteList />
         <Box sx={{ paddingTop: '10px' }} />
         <ListItem>
           <Box

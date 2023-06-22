@@ -25,7 +25,6 @@ const modalStyle = {
 }
 let timer: any
 const timeout = 500
-let isModalClosed = false
 
 const TaskModal = ({
   boardId,
@@ -43,6 +42,7 @@ const TaskModal = ({
   const [task, setTask] = useState<Task | undefined>(taskProps)
   const [title, setTitle] = useState<string>('')
   const [content, setContent] = useState<string>('')
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
   const editorWrapperRef = useRef<HTMLDivElement>(null)
 
@@ -60,6 +60,7 @@ const TaskModal = ({
     onSuccess: () => {
       onDeleteTask(task as Task)
       setTask(undefined)
+      setIsModalOpen(false)
     },
     onError: (error: any) => {
       toast.dismiss()
@@ -73,7 +74,7 @@ const TaskModal = ({
     setContent(taskProps !== undefined ? taskProps.content : '')
 
     if (taskProps !== undefined) {
-      isModalClosed = false
+      setIsModalOpen(true)
 
       updateEditorHeight()
     }
@@ -93,9 +94,9 @@ const TaskModal = ({
   }
 
   const handleClose = () => {
-    isModalClosed = true
     onClose()
     onUpdateTask(task as Task)
+    setIsModalOpen(false)
   }
 
   const deleteTask = () => {
@@ -119,7 +120,7 @@ const TaskModal = ({
     clearTimeout(timer)
     const data = editor.getData()
 
-    if (!isModalClosed) {
+    if (isModalOpen) {
       timer = setTimeout(() => {
         updateTaskMutation.mutate({ boardId, taskId: (task as Task)?._id, body: { content: data } })
       }, timeout)
@@ -130,16 +131,15 @@ const TaskModal = ({
     onUpdateTask(task as Task)
   }
 
-  console.log('task:', task)
   return (
     <Modal
-      open={task !== undefined}
+      open={isModalOpen}
       onClose={handleClose}
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{ timeout: 500 }}
     >
-      <Fade in={task !== undefined}>
+      <Fade in={isModalOpen}>
         <Box sx={modalStyle}>
           <Box
             sx={{

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Box } from '@mui/material'
+import { Container, Box, Typography } from '@mui/material'
 import { useState, useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import Loading from '../common/Loading'
@@ -30,7 +30,15 @@ const AuthLayout = () => {
           flexDirection: 'column'
         }}
       >
-        <img src={assets.images.logoDark} style={{ width: '100px' }} alt='app logo' />
+        <Typography
+          component='h1'
+          variant='h4'
+          sx={{
+            fontWeight: '700'
+          }}
+        >
+          Trello
+        </Typography>
         <Outlet />
       </Box>
     </Container>

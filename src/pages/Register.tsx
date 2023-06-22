@@ -44,7 +44,6 @@ const Register = () => {
   const registerMutation = useMutation({
     mutationFn: (body: { username: string; password: string }) => authApi.register(body),
     onSuccess: (res) => {
-      console.log('token:', res.data.token)
       localStorage.setItem('token', res.data.token)
       toast.dismiss()
       toast.success('Register success')

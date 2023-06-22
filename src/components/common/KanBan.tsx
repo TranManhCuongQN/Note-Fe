@@ -28,7 +28,7 @@ const KanBan = ({ boardId, dataSection }: { boardId: string; dataSection: Sectio
       }
     }) => taskApi.updatePosition(data.boardId, data.body),
     onSuccess: (res) => {
-      setData(res.data)
+      setData(data)
     },
     onError: (error: any) => {
       toast.dismiss()
@@ -39,13 +39,7 @@ const KanBan = ({ boardId, dataSection }: { boardId: string; dataSection: Sectio
   const createSectionMutation = useMutation({
     mutationFn: () => sectionApi.create(boardId),
     onSuccess: (res) => {
-      console.log('res:', res.data)
-      setData((prev) => {
-        if (Array.isArray(prev)) {
-          return [...prev, res.data]
-        }
-        return [res.data]
-      })
+      setData([...data, { ...res.data }])
     },
     onError: (error: any) => {
       toast.dismiss()
@@ -75,6 +69,8 @@ const KanBan = ({ boardId, dataSection }: { boardId: string; dataSection: Sectio
     }
   })
 
+  console.log('data:', data)
+
   const createTaskMutation = useMutation({
     mutationFn: (data: {
       boardId: string
@@ -83,10 +79,8 @@ const KanBan = ({ boardId, dataSection }: { boardId: string; dataSection: Sectio
       }
     }) => taskApi.create(data.boardId, data.body),
     onSuccess: (res, variable) => {
-      console.log('res:', res.data)
       const newData = [...data]
       const index = newData.findIndex((e) => e.id === variable.body.sectionId)
-      console.log(newData[index].tasks)
       newData[index]?.tasks?.unshift(res.data)
       setData(newData)
     },
@@ -163,6 +157,7 @@ const KanBan = ({ boardId, dataSection }: { boardId: string; dataSection: Sectio
 
   const onUpdateTask = (task: Task) => {
     const newData = [...data]
+    console.log('newData:', newData)
     const sectionIndex = newData.findIndex((e) => e.id === task.section.id)
     const taskIndex = newData[sectionIndex].tasks.findIndex((e) => e.id === task.id)
     newData[sectionIndex].tasks[taskIndex] = task
@@ -201,7 +196,7 @@ const KanBan = ({ boardId, dataSection }: { boardId: string; dataSection: Sectio
             overflowX: 'auto'
           }}
         >
-          {data?.map((section) => (
+          {data?.map((section, index) => (
             <div key={section.id} style={{ width: '300px' }}>
               <Droppable key={section.id} droppableId={section.id}>
                 {(provided) => (

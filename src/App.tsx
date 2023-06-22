@@ -13,7 +13,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-// import './css/custom-scrollbar.css'
+import './css/custom-scrollbar.css'
 
 function App() {
   const theme = createTheme({

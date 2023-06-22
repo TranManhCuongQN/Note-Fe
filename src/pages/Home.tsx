@@ -13,8 +13,7 @@ const Home = () => {
   const createBoardMutation = useMutation({
     mutationFn: () => boardApi.create(),
     onSuccess: (res) => {
-      console.log('createBoard', res.data)
-      setBoards(res.data)
+      setBoards([res.data])
       navigate(`/boards/${res.data.id}`)
     },
     onError: (error: any) => {

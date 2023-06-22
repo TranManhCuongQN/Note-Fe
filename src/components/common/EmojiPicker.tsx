@@ -33,7 +33,6 @@ const EmojiPicker = ({ icon, onChange }: { icon: string; onChange: (emoji: strin
           onEmojiSelect={(emoji: any) => {
             onChange(emoji.native)
           }}
-          onClickOutSide={() => setIsShowPicker(false)}
         />
       </Box>
     </Box>
