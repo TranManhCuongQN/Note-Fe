@@ -11,6 +11,12 @@ const AuthLayout = () => {
   const navigate = useNavigate()
   const token = localStorage.getItem('token')
 
+  useEffect(() => {
+    if (!token) {
+      navigate('/login')
+    }
+  }, [token, navigate])
+
   const { isLoading } = useQuery({
     queryKey: 'verifyToken',
     queryFn: () => authApi.verifyToken(),

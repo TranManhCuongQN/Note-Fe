@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useQuery } from 'react-query'
 import { Outlet, useNavigate } from 'react-router-dom'
 import authApi from 'src/api/auth.api'
@@ -11,6 +11,12 @@ const AppLayout = () => {
   const navigate = useNavigate()
   const token = localStorage.getItem('token')
   const setUser = useUserStore((state) => state.setUser)
+
+  useEffect(() => {
+    if (!token) {
+      navigate('/login')
+    }
+  }, [token, navigate])
 
   const { isLoading } = useQuery({
     queryKey: 'verifyToken',
