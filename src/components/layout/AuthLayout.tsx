@@ -14,7 +14,7 @@ const AuthLayout = () => {
   const { isLoading } = useQuery({
     queryKey: 'verifyToken',
     queryFn: () => authApi.verifyToken(),
-    onSuccess: () => navigate('/'),
+    onSuccess: () => navigate('/login'),
     enabled: Boolean(token)
   })
 
