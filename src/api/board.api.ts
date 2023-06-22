@@ -1,15 +1,23 @@
-import { boards } from 'src/zustand/board'
+import { Board } from 'src/types/board'
 import axiosClient from './axiosClient'
 
 const boardApi = {
   create: () => axiosClient.post('boards'),
   getAll: () => axiosClient.get('boards'),
-  updatePosition: (params: { boards: boards[] }) => axiosClient.put('boards', params),
+  updatePosition: (body: { boards: Board[] }) => axiosClient.put('boards', body),
   getOne: (id: string) => axiosClient.get(`boards/${id}`),
   delete: (id: string) => axiosClient.delete(`boards/${id}`),
-  update: (id: string, params: string) => axiosClient.put(`boards/${id}`, params),
+  update: (
+    id: string,
+    body: {
+      icon?: string
+      title?: string
+      description?: string
+      favourite?: boolean
+    }
+  ) => axiosClient.put(`boards/${id}`, body),
   getFavourites: () => axiosClient.get('boards/favourites'),
-  updateFavouritePosition: (params: string) => axiosClient.put('boards/favourites', params)
+  updateFavouritePosition: (boards: Board[]) => axiosClient.put('boards/favourites', boards)
 }
 
 export default boardApi

@@ -48,3 +48,8 @@
   top: 0 !important;
   background: #121212 !important;
 }
+
+.ck .ck-content {
+  background-color: transparent !important;
+  border: none !important;
+}

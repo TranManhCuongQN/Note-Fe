@@ -4,12 +4,13 @@ import { useMutation, useQuery } from 'react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import boardApi from 'src/api/board.api'
-import { boards, useBoardStore } from 'src/zustand/board'
+import { useBoardStore } from 'src/zustand/board'
 import { useUserStore } from 'src/zustand/user'
 import assets from 'src/assets'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd'
+import { Board } from 'src/types/board'
 
 const SIDE_BAR_WIDTH = 250
 const Sidebar = () => {
@@ -46,7 +47,7 @@ const Sidebar = () => {
   })
 
   const updatePositionMutation = useMutation({
-    mutationFn: (params: { boards: boards[] }) => boardApi.updatePosition(params),
+    mutationFn: (params: { boards: Board[] }) => boardApi.updatePosition(params),
     onError: (error: any) => {
       toast.dismiss()
       toast.error(error.message)
@@ -66,9 +67,10 @@ const Sidebar = () => {
     navigate('/login')
   }
 
-  const onDragEnd = ({ sourse, destination }: { sourse?: any; destination?: any }) => {
+  const onDragEnd = ({ source, destination }: DropResult) => {
+    if (!destination) return
     const newList = [...boards]
-    const [removed] = newList.splice(sourse.index, 1)
+    const [removed] = newList.splice(source.index, 1)
     newList.splice(destination.index, 0, removed)
 
     const activeItem = newList.findIndex((board) => board._id === boardId)
@@ -142,33 +144,32 @@ const Sidebar = () => {
           <Droppable key={'list-board-droppable-key'} droppableId={'list-board-droppable'}>
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
-                {boards &&
-                  boards.map((item, index) => (
-                    <Draggable key={item.id} draggableId={item.id} index={index}>
-                      {(provided, snapshot) => (
-                        <ListItemButton
-                          ref={provided.innerRef}
-                          {...provided.dragHandleProps}
-                          {...provided.draggableProps}
-                          selected={index === activeIndex}
-                          component={Link}
-                          to={`/boards/${item.id}`}
-                          sx={{
-                            pl: '20px',
-                            cursor: snapshot.isDragging ? 'grab' : 'pointer!important'
-                          }}
+                {boards?.map((item, index) => (
+                  <Draggable key={item.id} draggableId={item.id} index={index}>
+                    {(provided, snapshot) => (
+                      <ListItemButton
+                        ref={provided.innerRef}
+                        {...provided.dragHandleProps}
+                        {...provided.draggableProps}
+                        selected={index === activeIndex}
+                        component={Link}
+                        to={`/boards/${item.id}`}
+                        sx={{
+                          pl: '20px',
+                          cursor: snapshot.isDragging ? 'grab' : 'pointer!important'
+                        }}
+                      >
+                        <Typography
+                          variant='body2'
+                          fontWeight='700'
+                          sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
                         >
-                          <Typography
-                            variant='body2'
-                            fontWeight='700'
-                            sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
-                          >
-                            {item.icon} {item.title}
-                          </Typography>
-                        </ListItemButton>
-                      )}
-                    </Draggable>
-                  ))}
+                          {item.icon} {item.title}
+                        </Typography>
+                      </ListItemButton>
+                    )}
+                  </Draggable>
+                ))}
                 {provided.placeholder}
               </div>
             )}

@@ -1,11 +1,9 @@
+import { User } from 'src/types/user'
 import { create } from 'zustand'
 
 interface UserState {
-  user: {
-    username: string
-    password: string
-  }
-  setUser: (user: { username: string; password: string }) => void
+  user: User
+  setUser: (user: User) => void
 }
 
 export const useUserStore = create<UserState>((set) => ({
@@ -13,5 +11,5 @@ export const useUserStore = create<UserState>((set) => ({
     username: '',
     password: ''
   },
-  setUser: (user: { username: string; password: string }) => set({ user })
+  setUser: (user: User) => set({ user })
 }))
