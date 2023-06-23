@@ -9,19 +9,11 @@ import authApi from 'src/api/auth.api'
 
 const AuthLayout = () => {
   const navigate = useNavigate()
-  const token = localStorage.getItem('token')
-
-  useEffect(() => {
-    if (!token) {
-      navigate('/login')
-    }
-  }, [token, navigate])
 
   const { isLoading } = useQuery({
     queryKey: 'verifyToken',
     queryFn: () => authApi.verifyToken(),
-    onSuccess: () => navigate('/login'),
-    enabled: Boolean(token)
+    onSuccess: () => navigate('/login')
   })
 
   return isLoading ? (
@@ -43,7 +35,7 @@ const AuthLayout = () => {
             fontWeight: '700'
           }}
         >
-          Trello
+          Note
         </Typography>
         <Outlet />
       </Box>

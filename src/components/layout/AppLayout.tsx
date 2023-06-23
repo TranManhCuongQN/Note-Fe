@@ -9,14 +9,7 @@ import Loading from '../common/Loading'
 
 const AppLayout = () => {
   const navigate = useNavigate()
-  const token = localStorage.getItem('token')
   const setUser = useUserStore((state) => state.setUser)
-
-  useEffect(() => {
-    if (!token) {
-      navigate('/login')
-    }
-  }, [token, navigate])
 
   const { isLoading } = useQuery({
     queryKey: 'verifyToken',
@@ -24,9 +17,9 @@ const AppLayout = () => {
     onSuccess: (res) => {
       setUser(res.data.user)
     },
-    onError: () => navigate('/login'),
-    enabled: Boolean(token)
+    onError: () => navigate('/login')
   })
+
   return isLoading ? (
     <Loading fullHeight={true} />
   ) : (

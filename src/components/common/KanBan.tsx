@@ -110,6 +110,20 @@ const KanBan = ({ boardId, dataSection }: { boardId: string; dataSection: Sectio
     if (source.droppableId !== destination.droppableId) {
       const [removed] = sourceTasks.splice(source.index, 1)
       destinationTasks.splice(destination.index, 0, removed)
+      const updateSectionId = destinationCol.id
+      const taskIndex = destinationTasks.findIndex((e) => e.id === removed.id)
+
+      if (taskIndex !== -1) {
+        destinationTasks[taskIndex] = {
+          ...destinationTasks[taskIndex],
+          section: {
+            ...destinationTasks[taskIndex].section,
+            _id: updateSectionId,
+            id: updateSectionId
+          }
+        }
+      }
+
       data[sourceColIndex].tasks = sourceTasks
       data[destinationColIndex].tasks = destinationTasks
     } else {
@@ -157,8 +171,7 @@ const KanBan = ({ boardId, dataSection }: { boardId: string; dataSection: Sectio
 
   const onUpdateTask = (task: Task) => {
     const newData = [...data]
-    console.log('newData:', newData)
-    const sectionIndex = newData.findIndex((e) => e.id === task.section.id)
+    const sectionIndex = newData.findIndex((e) => e.id === task.section._id)
     const taskIndex = newData[sectionIndex].tasks.findIndex((e) => e.id === task.id)
     newData[sectionIndex].tasks[taskIndex] = task
     setData(newData)
